@@ -13,7 +13,6 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int UNIT = 50; //size of "blocks"
 
     boolean alive = false;
-    char movement = 'F';
     int playerX;
     int playerY;
 
