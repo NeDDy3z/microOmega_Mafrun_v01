@@ -11,12 +11,6 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int SCR_HEIGHT = 600; //hieght of window
 
     static final int UNIT = 50; //size of "blocks"
-    static final int UNIT_SIZE = (SCR_WIDTH * SCR_HEIGHT) / UNIT; //how many blocks fit in one window
-
-    static final int DELAY = 50; //how fast game runs
-
-    final int x[] = new int[UNIT_SIZE]; //x coords
-    final int y[] = new int[UNIT_SIZE]; //y coords
 
     boolean alive = false;
     char movement = 'F';
@@ -41,7 +35,7 @@ public class GamePanel extends JPanel implements ActionListener {
         newPlayer();
         alive = true;
 
-        timer = new Timer(DELAY, this);
+        timer = new Timer(50, this);
         timer.start();
     }
 
@@ -53,8 +47,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void newPlayer() { //spawn of player
-        playerX = 50;
-        playerY = 500;
+        playerX = 1 * 50;
+        playerY = 11 * 50;
     }
     //endregion
 
@@ -77,7 +71,7 @@ public class GamePanel extends JPanel implements ActionListener {
             //endregion
 
             g.setColor(Color.BLUE);
-            g.fillOval(playerX, playerY, UNIT, UNIT);
+            g.fillOval(playerX + 5, playerY + 5, UNIT - 10, UNIT - 10); //+5 & -10 is so that player is smaller and in middle of "block"
 
 
             /*
