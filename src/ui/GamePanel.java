@@ -1,5 +1,7 @@
 package ui;
 
+import level.GameLevel;
+
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -54,35 +56,42 @@ public class GamePanel extends JPanel implements ActionListener {
 
 
     //region rendering
-    public void paintComponent(Graphics g) { //calls for render (ig)
+    public void paintComponent(Graphics g) { //calls for render
         super.paintComponent(g);
         draw(g);
+        mapLayout(g);
     }
 
     public void draw(Graphics g) { //render of movement etc.
 
         if (alive) {
-            //region GRID
+            /* GRID
             for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
                 g.drawLine(i * UNIT, 0, i * UNIT, SCR_HEIGHT);
                 g.drawLine(0, i * UNIT, SCR_WIDTH, i * UNIT);
             }
-            //endregion
-
+            */
             g.setColor(Color.BLUE);
             g.fillOval(playerX + 5, playerY + 5, UNIT - 10, UNIT - 10); //+5 & -10 is so that player is smaller and in middle of "block"
-
-
-            /*
-            //region Score
-            g.setColor(Color.red); //až potom co udělám tělo
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            FontMetrics metricsScore = getFontMetrics(g.getFont());
-            g.drawString("Score: " + applesEaten, (SCREEN_WIDTH - metricsScore.stringWidth("Score: " + applesEaten)) / 2, g.getFont().getSize());
-            //endregion
-             */
         }
         else gameOver(g);
+    }
+
+    public void mapLayout(Graphics g) { //NEEDS HEAVY OPTIMIZATION!!!!!!
+        g.setColor(Color.BLACK);
+        int x = 0;
+        int y = 0;
+        int block = 0;
+        for (int i = 0; i < SCR_HEIGHT; i++) {
+            for (int j = 0; j < SCR_WIDTH / UNIT; j++) {
+                if (GameLevel.getLayout().get(block).equals(1)) {}
+                else g.fillRect(x * 50, y * 50, UNIT, UNIT);
+                x++;
+                block++;
+            }
+            y++;
+            x = 0;
+        }
     }
     //endregion
 

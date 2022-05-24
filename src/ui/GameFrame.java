@@ -1,6 +1,5 @@
 package ui;
 
-import ui.GamePanel;
 import javax.swing.*;
 
 public class GameFrame extends JFrame{
@@ -13,6 +12,7 @@ public class GameFrame extends JFrame{
         this.setLocationRelativeTo(null); //opens window in the middle of a screen
         this.setResizable(false);
         this.setVisible(true);
-        this.pack(); //??
+        this.pack();
     }
+
 }
