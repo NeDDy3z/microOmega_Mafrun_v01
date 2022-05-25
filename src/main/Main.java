@@ -1,6 +1,9 @@
 package main;
 
+import level.GameLevel;
+import logic.GameLogic;
 import ui.GameFrame;
+import ui.GamePanel;
 
 
 public class Main {

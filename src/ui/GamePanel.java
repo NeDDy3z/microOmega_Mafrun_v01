@@ -1,6 +1,7 @@
 package ui;
 
 import level.GameLevel;
+import logic.GameLogic;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -15,8 +16,8 @@ public class GamePanel extends JPanel implements ActionListener {
     static final int UNIT = 50; //size of "blocks"
 
     boolean alive = false;
-    int playerX;
-    int playerY;
+    int playerX = 1 * 50;
+    int playerY = 11 * 50;
 
     Timer timer;
     //endregion
@@ -24,7 +25,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
 
     //region panel + game start&end
-    GamePanel() { //initiates panel
+    public GamePanel() { //initiates panel
         this.setPreferredSize(new Dimension(SCR_WIDTH, SCR_HEIGHT));
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
@@ -34,9 +35,6 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void gameStart() { //start game
         alive = true;
-
-        playerX = 1 * 50;
-        playerY = 11 * 50;
 
         timer = new Timer(50, this);
         timer.start();
@@ -104,23 +102,43 @@ public class GamePanel extends JPanel implements ActionListener {
         public void keyPressed(KeyEvent e){
 
             switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP: //left arrowkey moves player to the left
-                    playerY -= UNIT;
+                case KeyEvent.VK_UP: //up arrowkey moves player up
+                    if (GameLevel.getLayout().get(GameLevel.blockCoords(playerX, playerY - UNIT)).equals(1)) playerY -= UNIT; //prevents from entering walls - if block is empty --> 1 then u can go
                     break;
 
                 case KeyEvent.VK_DOWN:
-                    playerY += UNIT;
+                    if (GameLevel.getLayout().get(GameLevel.blockCoords(playerX, playerY + UNIT)).equals(1)) playerY += UNIT;
                     break;
 
                 case KeyEvent.VK_LEFT:
-                    playerX -= UNIT;
+                    if (GameLevel.getLayout().get(GameLevel.blockCoords(playerX - UNIT, playerY)).equals(1)) playerX -= UNIT;
                     break;
 
                 case KeyEvent.VK_RIGHT:
-                    playerX += UNIT;
+                    if (GameLevel.getLayout().get(GameLevel.blockCoords(playerX + UNIT, playerY)).equals(1)) playerX += UNIT;
                     break;
             }
         }
+    }
+    //endregion
+
+
+
+    //region get&set
+    public int getPlayerX() {
+        return playerX;
+    }
+
+    public int getPlayerY() {
+        return playerY;
+    }
+
+    public void setPlayerX(int playerX) {
+        this.playerX = playerX;
+    }
+
+    public void setPlayerY(int playerY) {
+        this.playerY = playerY;
     }
     //endregion
 }

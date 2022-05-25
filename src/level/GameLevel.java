@@ -20,7 +20,7 @@ public class GameLevel {
 
     }
 
-    public static void read() {
+    public static void read() { //reads map from file
 
         try {
 
@@ -39,6 +39,17 @@ public class GameLevel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int blockCoords(int x, int y) { //convert block coordinations to position in "map list"
+        int pos = 0;
+
+        for (int i = 1; i < (y / 50) + 1; i++) {
+            pos += 12;
+        }
+        pos += (x / 50);
+
+        return pos;
     }
 
 }
