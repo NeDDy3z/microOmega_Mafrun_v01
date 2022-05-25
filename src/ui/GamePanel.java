@@ -10,7 +10,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     //region data
     static final int SCR_WIDTH = 600; //width of window
-    static final int SCR_HEIGHT = 600; //hieght of window
+    static final int SCR_HEIGHT = 600; //height of window
 
     static final int UNIT = 50; //size of "blocks"
 
@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
 
     //region panel + game start&end
-    GamePanel() { //initiates window and starts game
+    GamePanel() { //initiates panel
         this.setPreferredSize(new Dimension(SCR_WIDTH, SCR_HEIGHT));
         this.setFocusable(true);
         this.addKeyListener(new MyKeyAdapter());
@@ -32,24 +32,21 @@ public class GamePanel extends JPanel implements ActionListener {
         gameStart();
     }
 
-    public void gameStart() { //starts timer
-        newPlayer();
+    public void gameStart() { //start game
         alive = true;
+
+        playerX = 1 * 50;
+        playerY = 11 * 50;
 
         timer = new Timer(50, this);
         timer.start();
     }
 
-    public void gameOver(Graphics g) {
+    public void gameOver(Graphics g) { //game end
         g.setColor(Color.white);
         g.setFont(new Font("Arial", Font.BOLD, 60));
         FontMetrics metrics = getFontMetrics(g.getFont());
         g.drawString("You survived:  without shitting", (SCR_WIDTH - metrics.stringWidth("You survived:  without shitting")) / 2, g.getFont().getSize());
-    }
-
-    public void newPlayer() { //spawn of player
-        playerX = 1 * 50;
-        playerY = 11 * 50;
     }
     //endregion
 
@@ -59,10 +56,10 @@ public class GamePanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) { //calls for render
         super.paintComponent(g);
         draw(g);
-        mapLayout(g);
+        mapLoad(g);
     }
 
-    public void draw(Graphics g) { //render of movement etc.
+    public void draw(Graphics g) { //render of player movement
 
         if (alive) {
             /* GRID
@@ -77,15 +74,14 @@ public class GamePanel extends JPanel implements ActionListener {
         else gameOver(g);
     }
 
-    public void mapLayout(Graphics g) { //NEEDS HEAVY OPTIMIZATION!!!!!!
+    public void mapLoad(Graphics g) { //loads map layout
         g.setColor(Color.BLACK);
         int x = 0;
         int y = 0;
         int block = 0;
-        for (int i = 0; i < SCR_HEIGHT; i++) {
+        for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
             for (int j = 0; j < SCR_WIDTH / UNIT; j++) {
-                if (GameLevel.getLayout().get(block).equals(1)) {}
-                else g.fillRect(x * 50, y * 50, UNIT, UNIT);
+                if (GameLevel.getLayout().get(block).equals(0)) g.fillRect(x * 50, y * 50, UNIT, UNIT);
                 x++;
                 block++;
             }
