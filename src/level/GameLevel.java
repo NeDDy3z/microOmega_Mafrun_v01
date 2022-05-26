@@ -1,5 +1,7 @@
 package level;
 
+import ui.GamePanel;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,24 +11,18 @@ public class GameLevel {
 
     final static ArrayList<Integer> level = new ArrayList<Integer>();
 
-    final static boolean readingDone = false;
 
 
-
-    public static ArrayList<Integer> getLayout() {
-
-        if (!readingDone) read();
+    public static ArrayList<Integer> getMapLayout() {
         return level;
-
     }
 
-    public static void read() { //reads map from file
+
+
+    public static void readLevel() { //reads map from file
 
         try {
-
-            BufferedReader br;
-            br = new BufferedReader(new FileReader("gamefiles/level.csv"));
-
+            BufferedReader br = new BufferedReader(new FileReader("gamefiles/level1.csv"));
             String line;
             while ((line = br.readLine()) != null) {
                 var input = line.split(",");
@@ -35,21 +31,21 @@ public class GameLevel {
                     level.add(Integer.parseInt(input[i]));
                 }
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+
+
     public static int blockCoords(int x, int y) { //convert block coordinations to position in "map list"
         int pos = 0;
 
         for (int i = 1; i < (y / 50) + 1; i++) {
-            pos += 12;
+            pos += 20;
         }
         pos += (x / 50);
 
         return pos;
     }
-
 }

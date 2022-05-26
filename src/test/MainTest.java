@@ -1,7 +1,6 @@
 package test;
 
 import level.GameLevel;
-import logic.GameLogic;
 import ui.GameFrame;
 import ui.GamePanel;
 
@@ -16,14 +15,15 @@ class MainTest {
 
 
 
-        GamePanel gp = new GamePanel();
-        GameLogic gl = new GameLogic();
+        GamePanel gPan = new GamePanel();
 
-        System.out.println("Size of arraylist: "+ GameLevel.getLayout().size());
-        System.out.println("Player posX: "+ gp.getPlayerX() +"\nPlayer posY: "+ gp.getPlayerY());
+        System.out.println("Size of arraylist: "+ GameLevel.getMapLayout().size());
 
-        System.out.println(GameLevel.blockCoords(50,550));
-        System.out.println(GameLevel.getLayout().get(GameLevel.blockCoords(50,550)));
+        System.out.println("Block order in maplist: "+ GameLevel.blockCoords(50,550));
+        System.out.println("Value of the block: "+ GameLevel.getMapLayout().get(GameLevel.blockCoords(50,550)));
+
+
+
 
     }
 }
