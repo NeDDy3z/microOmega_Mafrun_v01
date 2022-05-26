@@ -21,7 +21,7 @@ public class GamePanel extends JPanel implements ActionListener {
     int playerY = 19 * 50;
     boolean alive = false;
     boolean win = false;
-    int countdown = 60;
+    int countdown = 75;
 
     Timer timer;
     //endregion
@@ -89,25 +89,19 @@ public class GamePanel extends JPanel implements ActionListener {
 
     public void draw(Graphics g) { //render of player movement
         if (alive) {
-            for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
-                g.drawLine(i * UNIT, 0, i * UNIT, SCR_HEIGHT);
-                g.drawLine(0, i * UNIT, SCR_WIDTH, i * UNIT);
-            }
+            GameLevel.getMapLayout().set(GameLevel.blockCoords(playerX, playerY), 2);
 
             mapLoad(g);
 
+            //player
             g.setColor(Color.BLUE);
             g.fillOval(playerX + 5, playerY + 5, UNIT - 10, UNIT - 10); //+5 & -10 is so that player is smaller and in middle of "block"
 
+            //countdown
             g.setColor(Color.red);
             g.setFont(new Font("Arial", Font.BOLD, 30));
             FontMetrics metricsScore = getFontMetrics(g.getFont());
             g.drawString(String.valueOf(countdown), (SCR_WIDTH - metricsScore.stringWidth(String.valueOf(countdown))) / 2, g.getFont().getSize());
-
-            if (playerX == 18 * UNIT && playerY == 19 * UNIT) {
-                win = true;
-                alive = false;
-            }
         }
         else gameOver(g);
     }
@@ -120,14 +114,11 @@ public class GamePanel extends JPanel implements ActionListener {
         if (alive) {
             for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
                 for (int j = 0; j < SCR_WIDTH / UNIT; j++) {
-
                     g.setColor(Color.BLACK);
                     if (GameLevel.getMapLayout().get(block).equals(0) || GameLevel.getMapLayout().get(block).equals(1)) g.fillRect(x * UNIT, y * UNIT, UNIT, UNIT);
                     else {
                         g.setColor(Color.WHITE);
                         g.fillRect(x * 50, y * 50, UNIT, UNIT);
-                        g.fillRect(1 * UNIT, 19 * UNIT, UNIT, UNIT);
-                        g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/toilet.png"), 18 * UNIT,19 * UNIT, null);
                     }
                     x++;
                     block++;
@@ -135,6 +126,9 @@ public class GamePanel extends JPanel implements ActionListener {
                 y++;
                 x = 0;
             }
+            g.setColor(Color.white);
+            g.fillRect(1 * UNIT, 19 * UNIT, UNIT, UNIT);
+            g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/toilet.png"), 18 * UNIT,19 * UNIT, null);
         }
     }
     //endregion
@@ -145,6 +139,11 @@ public class GamePanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
+
+        if (playerX == 18 * UNIT && playerY == 19 * UNIT) {
+            win = true;
+            alive = false;
+        }
     }
 
     public class MyKeyAdapter extends KeyAdapter {
@@ -153,31 +152,19 @@ public class GamePanel extends JPanel implements ActionListener {
 
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_UP: //up arrowkey moves player up
-                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX, playerY - UNIT)).equals(0)) {
-                        playerY -= UNIT; //prevents from entering walls - if block is empty --> 1 then u can go
-                        GameLevel.getMapLayout().set(GameLevel.blockCoords(playerX, playerY), 2);
-                    }
+                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX, playerY - UNIT)).equals(0)) playerY -= UNIT;
                     break;
 
                 case KeyEvent.VK_DOWN:
-                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX, playerY + UNIT)).equals(0)) {
-                        playerY += UNIT;
-                        GameLevel.getMapLayout().set(GameLevel.blockCoords(playerX, playerY), 2);
-                    }
+                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX, playerY + UNIT)).equals(0)) playerY += UNIT;
                     break;
 
                 case KeyEvent.VK_LEFT:
-                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX - UNIT, playerY)).equals(0)) {
-                        playerX -= UNIT;
-                        GameLevel.getMapLayout().set(GameLevel.blockCoords(playerX, playerY), 2);
-                    }
+                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX - UNIT, playerY)).equals(0)) playerX -= UNIT;
                     break;
 
                 case KeyEvent.VK_RIGHT:
-                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX + UNIT, playerY)).equals(0)) {
-                        playerX += UNIT;
-                        GameLevel.getMapLayout().set(GameLevel.blockCoords(playerX, playerY), 2);
-                    }
+                    if (!GameLevel.getMapLayout().get(GameLevel.blockCoords(playerX + UNIT, playerY)).equals(0)) playerX += UNIT;
                     break;
             }
         }
