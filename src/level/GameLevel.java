@@ -9,30 +9,31 @@ import java.util.ArrayList;
 
 public class GameLevel {
 
-    final static ArrayList<Integer> level = new ArrayList<Integer>();
+    static ArrayList<ArrayList<Integer>> levels = new ArrayList<ArrayList<Integer>>();
 
+    static String[] levelPath = {"gamefiles/level1.csv", "gamefiles/level2.csv", "gamefiles/level3.csv"};
 
-
-    public static ArrayList<Integer> getMapLayout() {
-        return level;
+    public static ArrayList <ArrayList<Integer>> getMapLayout() {
+        return levels;
     }
 
+    public static void readLevels() { //reads map from file
+        for (int i = 0; i < levelPath.length; i++) {
+            ArrayList<Integer> tmp = new ArrayList<Integer>();
+            try {
+                BufferedReader br = new BufferedReader(new FileReader(levelPath[i]));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    var input = line.split(",");
 
-
-    public static void readLevel() { //reads map from file
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("gamefiles/level1.csv"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                var input = line.split(",");
-
-                for (int i = 0; i < input.length; i++) {
-                    level.add(Integer.parseInt(input[i]));
+                    for (int j = 0; j < input.length; j++) {
+                        tmp.add(Integer.parseInt(input[j]));
+                    }
                 }
+                levels.add(tmp);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
