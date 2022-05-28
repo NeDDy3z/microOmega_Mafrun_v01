@@ -1,37 +1,39 @@
 package ui;
 
-import level.GameLevel;
-
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import input.GameInput;
+
+import static level.GameLevel.*;
 
 public class GamePanel extends JPanel implements ActionListener {
 
     //region data
-    static int SCR_WIDTH = 1000; //width of window
-    static int SCR_HEIGHT = 1000; //height of window
-    static int UNIT = 50; //size of "blocks"
+    public final static int SCR_WIDTH = 1000; //width of window
+    public final static int SCR_HEIGHT = 1000; //height of window
+    public final static int UNIT = 50; //size of "blocks"
 
-    int playerX = 1 * 50;
-    int playerY = 19 * 50;
+    public static int playerX = 1 * 50;
+    public static int playerY = 19 * 50;
+    public static int levelSelection = 0;
+    private static int countdown = 75;
 
-    boolean alive = false;
-    boolean win = false;
+    private boolean alive = false;
+    private boolean win = false;
 
-    int countdown = 75;
-    int levelSelection = 0;
+    private Timer timer;
 
-    Timer timer;
-
-    private enum STATE {
-        MENU,
+    public static enum STATE {
+        MAINMENU,
+        LEVELMENU,
         GAME
-    };
+    }
+
+    public static STATE gameState = STATE.MAINMENU;
     //endregion
 
 
@@ -40,27 +42,28 @@ public class GamePanel extends JPanel implements ActionListener {
     public GamePanel() { //initiates panel
         this.setPreferredSize(new Dimension(SCR_WIDTH, SCR_HEIGHT));
         this.setFocusable(true);
-        this.addKeyListener(new MyKeyAdapter());
+        this.addKeyListener(new GameInput());
+        this.addMouseListener(new GameInput());
 
         gameStart();
     }
 
     public void gameStart() { //start game
-        GameLevel.readLevels();
+        readLevels();
         alive = true;
 
         timer = new Timer(60, this);
         timer.start();
-
-        scheduler.scheduleAtFixedRate(runnable, 0, 1, SECONDS);
     }
 
     public void gameOver(Graphics g) { //game end
+        scheduler.shutdown();
+
         g.setColor(Color.BLACK);
         if (win) {
             g.setFont(new Font("Arial", Font.BOLD, 20));
             FontMetrics metrics = getFontMetrics(g.getFont());
-            g.drawString("You found your throne, now you can peacefully shit.", (SCR_WIDTH - metrics.stringWidth("You found your throne, now you can peacefully shit.")) / 2, SCR_HEIGHT / 2);
+            g.drawString("After "+ countdown+"s - You found your throne, now you can peacefully shit.", (SCR_WIDTH - metrics.stringWidth("After "+ countdown+"s - You found your throne, now you can peacefully shit.")) / 2, SCR_HEIGHT / 2);
         }
         else {
             g.setFont(new Font("Arial", Font.BOLD, 20));
@@ -74,14 +77,13 @@ public class GamePanel extends JPanel implements ActionListener {
 
 
     //region timer
-    final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    final Runnable runnable = new Runnable() {
+    public final static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    public final static Runnable runnable = new Runnable() {
 
         public void run() {
             countdown--;
-            if (countdown < 0) {
+            if (countdown <= 0) {
                 scheduler.shutdown();
-                alive = false;
             }
         }
     };
@@ -92,14 +94,18 @@ public class GamePanel extends JPanel implements ActionListener {
     //region rendering
     public void paintComponent(Graphics g) { //calls for render
         super.paintComponent(g);
-        render(g);
+
+        if (gameState == STATE.MAINMENU) GameMenu.renderMainMenu(g);
+        if (gameState == STATE.LEVELMENU) GameMenu.renderLevelSelection(g);
+        if (gameState == STATE.GAME) renderGame(g);
     }
 
-    public void render(Graphics g) { //render of player movement
-        if (alive) {
-            GameLevel.getMapLayout().get(levelSelection).set(GameLevel.blockCoords(playerX, playerY), 2);
+    //render of map & player movement & countdown timer / game ending
+    public void renderGame(Graphics g) {
+        if (alive || countdown > 0) {
+            getMapLayout().get(levelSelection).set(blockCoords(playerX, playerY), 2);
 
-            renderMap(g);
+            renderLevel(g);
 
             //player
             g.setColor(Color.BLUE);
@@ -112,34 +118,11 @@ public class GamePanel extends JPanel implements ActionListener {
         }
         else gameOver(g);
     }
-
-    public void renderMap(Graphics g) { //renders map layout
-        int x = 0;
-        int y = 0;
-        int block = 0;
-        for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
-            for (int j = 0; j < SCR_WIDTH / UNIT; j++) {
-                g.setColor(Color.BLACK);
-                if (GameLevel.getMapLayout().get(levelSelection).get(block).equals(0) || GameLevel.getMapLayout().get(levelSelection).get(block).equals(1)) g.fillRect(x * UNIT, y * UNIT, UNIT, UNIT);
-                else {
-                    g.setColor(Color.WHITE);
-                    g.fillRect(x * 50, y * 50, UNIT, UNIT);
-                }
-                x++;
-                block++;
-            }
-            y++;
-            x = 0;
-        }
-        g.setColor(Color.white);
-        g.fillRect(1 * UNIT, 19 * UNIT, UNIT, UNIT);
-        g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/toilet.png"), 18 * UNIT,19 * UNIT, null);
-    }
     //endregion
 
 
 
-    //region keyboard input
+    //after any action repaint (also checks if player got to the finish)
     @Override
     public void actionPerformed(ActionEvent e) {
         repaint();
@@ -149,29 +132,4 @@ public class GamePanel extends JPanel implements ActionListener {
             alive = false;
         }
     }
-
-    public class MyKeyAdapter extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent e){
-
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_UP: //up arrowkey moves player up
-                    if (!GameLevel.getMapLayout().get(levelSelection).get(GameLevel.blockCoords(playerX, playerY - UNIT)).equals(0)) playerY -= UNIT;
-                    break;
-
-                case KeyEvent.VK_DOWN:
-                    if (!GameLevel.getMapLayout().get(levelSelection).get(GameLevel.blockCoords(playerX, playerY + UNIT)).equals(0)) playerY += UNIT;
-                    break;
-
-                case KeyEvent.VK_LEFT:
-                    if (!GameLevel.getMapLayout().get(levelSelection).get(GameLevel.blockCoords(playerX - UNIT, playerY)).equals(0)) playerX -= UNIT;
-                    break;
-
-                case KeyEvent.VK_RIGHT:
-                    if (!GameLevel.getMapLayout().get(levelSelection).get(GameLevel.blockCoords(playerX + UNIT, playerY)).equals(0)) playerX += UNIT;
-                    break;
-            }
-        }
-    }
-    //endregion
 }
