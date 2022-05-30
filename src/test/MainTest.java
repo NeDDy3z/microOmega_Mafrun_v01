@@ -1,10 +1,9 @@
 package test;
 
-import level.GameLevel;
-import ui.GameFrame;
+import data.GameLevel;
 import ui.GamePanel;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static data.GameLevel.*;
 
 class MainTest {
 
@@ -13,18 +12,17 @@ class MainTest {
 
         //new GameFrame();
 
+        /*
+        GameLevel gL = new GameLevel();
 
+        System.out.println("Size of arraylist: "+ gL.getMapLayout().get(0).size());
+        System.out.println("Block order in maplist: "+ gL.blockCoords(100,50));
+        System.out.println("Value of the block: "+ gL.getMapLayout().get(0).get(gL.blockCoords(100,50)));
 
-        GamePanel gPan = new GamePanel();
-
-        System.out.println("Size of arraylist: "+ GameLevel.getMapLayout().get(0).size());
-
-        System.out.println("Block order in maplist: "+ GameLevel.blockCoords(50,550));
-        System.out.println("Value of the block: "+ GameLevel.getMapLayout().get(0).get(GameLevel.blockCoords(50,550)));
-
-        System.out.println("LVL1: "+ GameLevel.getMapLayout().get(0).toString());
-        System.out.println("LVL2: "+ GameLevel.getMapLayout().get(1).toString());
-        System.out.println("LVL3: "+ GameLevel.getMapLayout().get(2).toString());
+        System.out.println("LVL1: "+ gL.getMapLayout().get(0).toString());
+        System.out.println("LVL2: "+ gL.getMapLayout().get(1).toString());
+        System.out.println("LVL3: "+ gL.getMapLayout().get(2).toString());
+         */
 
 
 

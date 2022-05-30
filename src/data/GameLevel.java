@@ -1,6 +1,13 @@
-package level;
+package data;
 
+import input.GameInput;
+import ui.GamePanel;
+import ui.GameRender;
+
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,9 +17,18 @@ import static ui.GamePanel.*;
 
 public class GameLevel {
 
-    static ArrayList<ArrayList<Integer>> levels = new ArrayList<ArrayList<Integer>>(); //Arraylist of arraylists of maps
-    static String[] levelPath = {"gamefiles/levels/level1.csv", "gamefiles/levels/level2.csv", "gamefiles/levels/level3.csv"}; //All map layout files
+    GameRender gR = new GameRender(this);
+    GameInput gI = new GameInput(this);
 
+    GamePanel gP;
+    public GameLevel(GamePanel gP) {
+        this.gP = gP;
+    }
+
+
+    //everything has to be static otherwise nothing works thanks to GamePanel (sadge)
+    private static ArrayList<ArrayList<Integer>> levels = new ArrayList<ArrayList<Integer>>(); //Arraylist of arraylists of maps
+    private static String[] levelPath = {"gamefiles/levels/level1.csv", "gamefiles/levels/level2.csv", "gamefiles/levels/level3.csv"}; //All map layout files
 
     //return arraylist of arraylists
     public static ArrayList <ArrayList<Integer>> getMapLayout() {
@@ -40,8 +56,6 @@ public class GameLevel {
         }
     }
 
-
-
     //return blocks position in its map arraylist
     public static int blockCoords(int x, int y) {
         int pos = 0;
@@ -54,29 +68,8 @@ public class GameLevel {
         return pos;
     }
 
-
-
-    //render map layout
-    public static void renderLevel(Graphics g) { //renders map layout
-        int x = 0;
-        int y = 0;
-        int block = 0;
-        for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
-            for (int j = 0; j < SCR_WIDTH / UNIT; j++) {
-                g.setColor(Color.BLACK);
-                if (GameLevel.getMapLayout().get(levelSelection).get(block).equals(0) || GameLevel.getMapLayout().get(levelSelection).get(block).equals(1)) g.fillRect(x * UNIT, y * UNIT, UNIT, UNIT);
-                else {
-                    g.setColor(Color.WHITE);
-                    g.fillRect(x * 50, y * 50, UNIT, UNIT);
-                }
-                x++;
-                block++;
-            }
-            y++;
-            x = 0;
-        }
-        g.setColor(Color.white);
-        g.fillRect(1 * UNIT, 19 * UNIT, UNIT, UNIT);
-        g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/images/toilet.png"), 18 * UNIT,19 * UNIT, null);
+    //removes everything from arraylist (used for "try again" feature)
+    public static void delete() {
+        for (int i = 0; i < levels.size(); i++) levels.remove(i);
     }
 }

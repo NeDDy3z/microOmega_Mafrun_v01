@@ -6,9 +6,10 @@ import java.awt.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import data.GameLevel;
 import input.GameInput;
 
-import static level.GameLevel.*;
+import static data.GameLevel.*;
 
 public class GamePanel extends JPanel implements ActionListener {
 
@@ -17,113 +18,84 @@ public class GamePanel extends JPanel implements ActionListener {
     public final static int SCR_HEIGHT = 1000; //height of window
     public final static int UNIT = 50; //size of "blocks"
 
-    public static int playerX = 1 * 50;
-    public static int playerY = 19 * 50;
-    public static int levelSelection = 0;
-    private static int countdown = 75;
-
-    private boolean alive = false;
-    private boolean win = false;
-
-    private Timer timer;
+    int playerX = 1 * UNIT;
+    int playerY = 19 * UNIT;
+    int levelSelection = 0;
+    int countdown = 75;
+    boolean alive = false;
+    boolean win = false;
+    public Timer timer;
 
     public static enum STATE {
         MAINMENU,
         LEVELMENU,
-        GAME
+        GAME,
+        GAMEOVER
     }
-
     public static STATE gameState = STATE.MAINMENU;
+
+    GameRender gR = new GameRender(this);
+    GameLevel gL = new GameLevel(this);
     //endregion
 
-
-
-    //region panel + game start&end
+    //region panel + game start
     public GamePanel() { //initiates panel
         this.setPreferredSize(new Dimension(SCR_WIDTH, SCR_HEIGHT));
         this.setFocusable(true);
-        this.addKeyListener(new GameInput());
-        this.addMouseListener(new GameInput());
+        this.addKeyListener(new GameInput(this));
+        this.addMouseListener(new GameInput(this));
 
         gameStart();
     }
 
     public void gameStart() { //start game
+        delete();
         readLevels();
+
+        playerX = 1 * UNIT;
+        playerY = 19 * UNIT;
+
         alive = true;
+        win = false;
+        countdown = 75;
 
         timer = new Timer(60, this);
         timer.start();
     }
-
-    public void gameOver(Graphics g) { //game end
-        scheduler.shutdown();
-
-        g.setColor(Color.BLACK);
-        if (win) {
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            FontMetrics metrics = getFontMetrics(g.getFont());
-            g.drawString("After "+ countdown+"s - You found your throne, now you can peacefully shit.", (SCR_WIDTH - metrics.stringWidth("After "+ countdown+"s - You found your throne, now you can peacefully shit.")) / 2, SCR_HEIGHT / 2);
-        }
-        else {
-            g.setFont(new Font("Arial", Font.BOLD, 20));
-            FontMetrics metrics = getFontMetrics(g.getFont());
-            g.drawString("You shat yourself while searching for restroom.", (SCR_WIDTH - metrics.stringWidth("You shat yourself while searching for restroom.")) / 2, SCR_HEIGHT / 2);
-        }
-
-    }
     //endregion
 
-
-
     //region timer
-    public final static ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    public final static Runnable runnable = new Runnable() {
+    public ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    public Runnable runnable = new Runnable() {
 
         public void run() {
             countdown--;
             if (countdown <= 0) {
                 scheduler.shutdown();
+                gameState = STATE.GAMEOVER;
             }
         }
     };
+
     //endregion
 
-
-
-    //region rendering
-    public void paintComponent(Graphics g) { //calls for render
+    //region call for render
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (gameState == STATE.MAINMENU) GameMenu.renderMainMenu(g);
-        if (gameState == STATE.LEVELMENU) GameMenu.renderLevelSelection(g);
-        if (gameState == STATE.GAME) renderGame(g);
-    }
-
-    //render of map & player movement & countdown timer / game ending
-    public void renderGame(Graphics g) {
-        if (alive || countdown > 0) {
-            getMapLayout().get(levelSelection).set(blockCoords(playerX, playerY), 2);
-
-            renderLevel(g);
-
-            //player
-            g.setColor(Color.BLUE);
-            g.fillOval(playerX + 5, playerY + 5, UNIT - 10, UNIT - 10); //+5 & -10 is so that player is smaller and in middle of "block"
-
-            //countdown
-            g.setColor(Color.red);
-            g.setFont(new Font("Arial", Font.BOLD, 30));
-            g.drawString(String.valueOf(countdown), (SCR_WIDTH - g.getFontMetrics(g.getFont()).stringWidth(String.valueOf(countdown))) / 2, g.getFont().getSize());
+        switch (gameState) {
+            case MAINMENU -> gR.renderMainMenu(g);
+            case LEVELMENU -> gR.renderLevelSelection(g);
+            case GAME -> {
+                if (alive) gR.renderGame(g);
+                else gameState = STATE.GAMEOVER;
+            }
+            case GAMEOVER -> gR.renderGameOver(g);
         }
-        else gameOver(g);
     }
     //endregion
 
-
-
-    //after any action repaint (also checks if player got to the finish)
-    @Override
+    //region actionperformed
     public void actionPerformed(ActionEvent e) {
         repaint();
 
@@ -132,4 +104,56 @@ public class GamePanel extends JPanel implements ActionListener {
             alive = false;
         }
     }
+    //endregion
+
+    //region get&set
+    public int getPlayerX() {
+        return playerX;
+    }
+    public int getPlayerY() {
+        return playerY;
+    }
+    public int getLevelSelection() {
+        return levelSelection;
+    }
+    public int getCountdown() {
+        return countdown;
+    }
+    public boolean isAlive() {
+        return alive;
+    }
+    public boolean isWin() {
+        return win;
+    }
+    public ScheduledExecutorService getScheduler() {
+        return scheduler;
+    }
+    public Runnable getRunnable() {
+        return runnable;
+    }
+    public void setPlayerX(int playerX) {
+        this.playerX = playerX;
+    }
+    public void setPlayerY(int playerY) {
+        this.playerY = playerY;
+    }
+    public void setLevelSelection(int levelSelection) {
+        this.levelSelection = levelSelection;
+    }
+    public void setCountdown(int countdown) {
+        this.countdown = countdown;
+    }
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
+    public void setWin(boolean win) {
+        this.win = win;
+    }
+    public void setScheduler(ScheduledExecutorService scheduler) {
+        this.scheduler = scheduler;
+    }
+    public void setRunnable(Runnable runnable) {
+        this.runnable = runnable;
+    }
+//endregion
 }
