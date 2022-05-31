@@ -1,4 +1,4 @@
-package data;
+package level;
 
 import input.GameInput;
 import ui.GamePanel;

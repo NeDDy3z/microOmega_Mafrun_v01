@@ -1,10 +1,5 @@
 package test;
 
-import data.GameLevel;
-import ui.GamePanel;
-
-import static data.GameLevel.*;
-
 class MainTest {
 
     @org.junit.jupiter.api.Test

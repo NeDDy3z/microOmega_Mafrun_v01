@@ -3,13 +3,13 @@ package ui;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.TimerTask;
 
-import data.GameLevel;
+import level.Countdown;
+import level.GameLevel;
 import input.GameInput;
 
-import static data.GameLevel.*;
+import static level.GameLevel.*;
 
 public class GamePanel extends JPanel implements ActionListener {
 
@@ -18,13 +18,13 @@ public class GamePanel extends JPanel implements ActionListener {
     public final static int SCR_HEIGHT = 1000; //height of window
     public final static int UNIT = 50; //size of "blocks"
 
-    int playerX = 1 * UNIT;
-    int playerY = 19 * UNIT;
-    int levelSelection = 0;
-    int countdown = 75;
-    boolean alive = false;
-    boolean win = false;
-    public Timer timer;
+    private int playerX = 1 * UNIT;
+    private int playerY = 19 * UNIT;
+    private int levelSelection = 0;
+    private int countdown = 100;
+    private boolean alive = false;
+    private boolean win = false;
+    private Timer timer;
 
     public static enum STATE {
         MAINMENU,
@@ -36,6 +36,7 @@ public class GamePanel extends JPanel implements ActionListener {
 
     GameRender gR = new GameRender(this);
     GameLevel gL = new GameLevel(this);
+    Countdown cd = new Countdown(this);
     //endregion
 
     //region panel + game start
@@ -65,18 +66,12 @@ public class GamePanel extends JPanel implements ActionListener {
     //endregion
 
     //region timer
-    public ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    public Runnable runnable = new Runnable() {
-
-        public void run() {
-            countdown--;
-            if (countdown <= 0) {
-                scheduler.shutdown();
-                gameState = STATE.GAMEOVER;
-            }
-        }
-    };
-
+    public void countdownStart() {
+        cd.countdownTimer.start();
+    }
+    public void countdownStop() {
+        cd.countdownTimer.stop();
+    }
     //endregion
 
     //region call for render
@@ -125,12 +120,6 @@ public class GamePanel extends JPanel implements ActionListener {
     public boolean isWin() {
         return win;
     }
-    public ScheduledExecutorService getScheduler() {
-        return scheduler;
-    }
-    public Runnable getRunnable() {
-        return runnable;
-    }
     public void setPlayerX(int playerX) {
         this.playerX = playerX;
     }
@@ -148,12 +137,6 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     public void setWin(boolean win) {
         this.win = win;
-    }
-    public void setScheduler(ScheduledExecutorService scheduler) {
-        this.scheduler = scheduler;
-    }
-    public void setRunnable(Runnable runnable) {
-        this.runnable = runnable;
     }
 //endregion
 }

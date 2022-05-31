@@ -1,6 +1,6 @@
 package ui;
 
-import data.GameLevel;
+import level.GameLevel;
 
 import java.awt.*;
 
@@ -59,7 +59,7 @@ public class GameRender {
     }
 
     public void renderGameOver(Graphics g) {
-        gP.scheduler.shutdown();
+        gP.countdownStop();
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 30));
@@ -69,7 +69,7 @@ public class GameRender {
 
         if (gP.isWin()) {
             g.drawString("After "+ gP.getCountdown() +"s - You found your throne, now you can peacefully shit.", (SCR_WIDTH - g.getFontMetrics().stringWidth("After "+ gP.getCountdown() +"s - You found your throne, now you can peacefully shit.")) / 2, SCR_HEIGHT / 2);
-            if (gP.getLevelSelection() < gL.getMapLayout().size()) g.drawString("Next level", (SCR_WIDTH - g.getFontMetrics().stringWidth("Next level")) / 4 * 3, 900);
+            if (gP.getLevelSelection() + 1 < gL.getMapLayout().size()) g.drawString("Next level", (SCR_WIDTH - g.getFontMetrics().stringWidth("Next level")) / 4 * 3, 900);
         }
         else g.drawString("You shat yourself while searching for restroom.", (SCR_WIDTH - g.getFontMetrics().stringWidth("You shat yourself while searching for restroom.")) / 2, SCR_HEIGHT / 2);
     }

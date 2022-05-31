@@ -1,17 +1,20 @@
 package input;
 
-import data.GameLevel;
+import level.Countdown;
+import level.GameLevel;
 import ui.GamePanel;
 
 import java.awt.event.*;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static level.GameLevel.blockCoords;
+import static level.GameLevel.getMapLayout;
 import static ui.GamePanel.*;
 
 public class GameInput implements MouseListener, KeyListener {
 
     GamePanel gP;
     GameLevel gL;
+    Countdown cd;
 
     public GameInput(GamePanel gP) {
         this.gP = gP;
@@ -19,6 +22,10 @@ public class GameInput implements MouseListener, KeyListener {
 
     public GameInput(GameLevel gL) {
         this.gL = gL;
+    }
+
+    public GameInput(Countdown cd) {
+        this.cd = cd;
     }
 
     //region input
@@ -31,7 +38,7 @@ public class GameInput implements MouseListener, KeyListener {
                 if (e.getX() >= 450 && e.getX() <= 550) {
                     if (e.getY() >= 460 && e.getY() <= 510) {
                         gameState = STATE.GAME;
-                        gP.getScheduler().scheduleAtFixedRate(gP.getRunnable(), 0,1, SECONDS);
+                        gP.countdownStart();
                     }
                 }
                 //level select button
@@ -62,35 +69,37 @@ public class GameInput implements MouseListener, KeyListener {
                     if (e.getX() >= 435 && e.getX() <= 565) {
                         gP.gameStart();
                         gameState = STATE.GAME;
+                        gP.countdownStart();
                     }
                     //next level
-                    if (e.getX() >= 645 && e.getX() <= 780 && gP.isWin()) {
-                        gP.setLevelSelection(gP.getLevelSelection() + 1);
+                    if (e.getX() >= 645 && e.getX() <= 780 && gP.isWin() && gP.getLevelSelection() + 1 < getMapLayout().size()) {
+                        gP.setLevelSelection(gP.getLevelSelection() + 2);
                         gP.gameStart();
                         gameState = STATE.GAME;
+                        gP.countdownStart();
                     }
                 }
         }
     }
 
-    //movement of player with arrowkeys
+    //movement of player with arrow-keys
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP: //up arrowkey moves player up
-                if (!gL.getMapLayout().get(gP.getLevelSelection()).get(gL.blockCoords(gP.getPlayerX(), gP.getPlayerY() - UNIT)).equals(0)) gP.setPlayerY(gP.getPlayerY() - UNIT);
+            case KeyEvent.VK_UP: //up arrow-key moves player up
+                if (!getMapLayout().get(gP.getLevelSelection()).get(blockCoords(gP.getPlayerX(), gP.getPlayerY() - UNIT)).equals(0)) gP.setPlayerY(gP.getPlayerY() - UNIT);
                 break;
 
             case KeyEvent.VK_DOWN:
-                if (!gL.getMapLayout().get(gP.getLevelSelection()).get(gL.blockCoords(gP.getPlayerX(), gP.getPlayerY() + UNIT)).equals(0)) gP.setPlayerY(gP.getPlayerY() + UNIT);
+                if (!getMapLayout().get(gP.getLevelSelection()).get(blockCoords(gP.getPlayerX(), gP.getPlayerY() + UNIT)).equals(0)) gP.setPlayerY(gP.getPlayerY() + UNIT);
                 break;
 
             case KeyEvent.VK_LEFT:
-                if (!gL.getMapLayout().get(gP.getLevelSelection()).get(gL.blockCoords(gP.getPlayerX() - UNIT, gP.getPlayerY())).equals(0)) gP.setPlayerX(gP.getPlayerX() - UNIT);
+                if (!getMapLayout().get(gP.getLevelSelection()).get(blockCoords(gP.getPlayerX() - UNIT, gP.getPlayerY())).equals(0)) gP.setPlayerX(gP.getPlayerX() - UNIT);
                 break;
 
             case KeyEvent.VK_RIGHT:
-                if (!gL.getMapLayout().get(gP.getLevelSelection()).get(gL.blockCoords(gP.getPlayerX() + UNIT, gP.getPlayerY())).equals(0)) gP.setPlayerX(gP.getPlayerX() + UNIT);
+                if (!getMapLayout().get(gP.getLevelSelection()).get(blockCoords(gP.getPlayerX() + UNIT, gP.getPlayerY())).equals(0)) gP.setPlayerX(gP.getPlayerX() + UNIT);
                 break;
         }
     }
