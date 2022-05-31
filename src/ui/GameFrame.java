@@ -1,3 +1,7 @@
+/**
+ * GameFrame
+ * initiates JFrame and GamePanel in it
+ */
 package ui;
 
 import javax.swing.*;
@@ -16,5 +20,4 @@ public class GameFrame extends JFrame{
         this.setLocationRelativeTo(null); //opens window in the middle of a screen
         this.setIconImage(Toolkit.getDefaultToolkit().getImage("gamefiles/toilet.png"));
     }
-
 }

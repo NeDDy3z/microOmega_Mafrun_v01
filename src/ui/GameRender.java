@@ -1,3 +1,7 @@
+/**
+ * GameRender
+ * Renders specific parts of program - menu, submenu, game, gameover
+ */
 package ui;
 
 import java.awt.*;

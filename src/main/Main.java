@@ -1,3 +1,7 @@
+/**
+ * Main
+ * initiates GameFrame
+ */
 package main;
 
 import ui.GameFrame;

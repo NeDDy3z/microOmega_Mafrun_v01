@@ -1,3 +1,10 @@
+/**
+ * GamePanel
+ * initates JPanel
+ * Starting game
+ * All game variables are here
+ * Rendering what is needed
+ */
 package ui;
 
 import javax.swing.*;

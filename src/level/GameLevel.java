@@ -1,3 +1,8 @@
+/**
+ * GameLevel
+ * Reads all levels from all the files
+ * Passes it to other classes with getMapLayout()
+ */
 package level;
 
 import java.io.BufferedReader;
@@ -7,6 +12,7 @@ import java.util.ArrayList;
 
 import input.GameInput;
 import ui.GamePanel;
+
 import ui.GameRender;
 
 public class GameLevel {

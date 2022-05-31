@@ -1,3 +1,7 @@
+/**
+ * Countdown
+ * Countdown timer for game, if it drops to 0 game ends, player lost
+ */
 package level;
 
 import input.GameInput;
@@ -6,7 +10,6 @@ import ui.GamePanel;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.TimerTask;
 
 import static ui.GamePanel.gameState;
 

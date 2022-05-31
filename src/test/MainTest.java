@@ -1,3 +1,7 @@
+/**
+ * MainTest
+ * For my own personal testing
+ */
 package test;
 
 import ui.GameFrame;

@@ -1,3 +1,8 @@
+/**
+ * GameInput
+ * Listens to user input
+ * Used for menu selection and player movement
+ */
 package input;
 
 import level.Countdown;
