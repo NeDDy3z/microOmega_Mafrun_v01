@@ -1,13 +1,15 @@
 package ui;
 
-import level.GameLevel;
-
 import java.awt.*;
 
+import level.GameLevel;
+
 import static ui.GamePanel.*;
+import static level.GameLevel.*;
 
 public class GameRender {
 
+    //region constructors
     GamePanel gP;
     GameLevel gL;
 
@@ -17,16 +19,17 @@ public class GameRender {
     public GameRender(GameLevel gL) {
         this.gL = gL;
     }
+    //endregion
 
     //region game
-    //render player movement & timer
-    public void renderGame(Graphics g) {
-        gL.getMapLayout().get(gP.getLevelSelection()).set(gL.blockCoords(gP.getPlayerX(), gP.getPlayerY()), 2);
+    public void renderGame(Graphics g) { //render of player position & countdown timer
+        getMapLayout().get(gP.getLevelSelection()).set(blockCoords(gP.getPlayerX(), gP.getPlayerY()), 2); //uncovering paths
+
         renderLevel(g);
 
         //player
         g.setColor(Color.BLUE);
-        g.fillOval(gP.getPlayerX() + 5, gP.getPlayerY() + 5, UNIT - 10, UNIT - 10); //+5 & -10 is so that player is smaller and in middle of "block"
+        g.fillOval(gP.getPlayerX() + 5, gP.getPlayerY() + 5, UNIT - 10, UNIT - 10);
 
         //countdown
         g.setColor(Color.red);
@@ -35,14 +38,14 @@ public class GameRender {
     }
 
     //render level
-    public void renderLevel(Graphics g) { //renders map layout
+    public void renderLevel(Graphics g) { //render of map layout
         int x = 0;
         int y = 0;
         int block = 0;
         for (int i = 0; i < SCR_HEIGHT / UNIT; i++) {
             for (int j = 0; j < SCR_WIDTH / UNIT; j++) {
                 g.setColor(Color.BLACK);
-                if (gL.getMapLayout().get(gP.getLevelSelection()).get(block).equals(0) || gL.getMapLayout().get(gP.getLevelSelection()).get(block).equals(1)) g.fillRect(x * UNIT, y * UNIT, UNIT, UNIT);
+                if (getMapLayout().get(gP.getLevelSelection()).get(block).equals(0) || getMapLayout().get(gP.getLevelSelection()).get(block).equals(1)) g.fillRect(x * UNIT, y * UNIT, UNIT, UNIT);
                 else {
                     g.setColor(Color.WHITE);
                     g.fillRect(x * 50, y * 50, UNIT, UNIT);
@@ -54,8 +57,8 @@ public class GameRender {
             x = 0;
         }
         g.setColor(Color.white);
-        g.fillRect(1 * UNIT, 19 * UNIT, UNIT, UNIT);
-        g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/images/toilet.png"), 18 * UNIT,19 * UNIT, null);
+        g.fillRect(1 * UNIT, 19 * UNIT, UNIT, UNIT); //start
+        g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/images/toilet.png"), 18 * UNIT,19 * UNIT, null); //finish
     }
 
     public void renderGameOver(Graphics g) {
@@ -63,21 +66,20 @@ public class GameRender {
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 30));
-
+        //selection
         g.drawString("Menu", (SCR_WIDTH - g.getFontMetrics().stringWidth("Menu")) / 4, 900);
         g.drawString("Try again", (SCR_WIDTH - g.getFontMetrics().stringWidth("Try again")) / 2, 900);
-
+        //game message
         if (gP.isWin()) {
             g.drawString("After "+ gP.getCountdown() +"s - You found your throne, now you can peacefully shit.", (SCR_WIDTH - g.getFontMetrics().stringWidth("After "+ gP.getCountdown() +"s - You found your throne, now you can peacefully shit.")) / 2, SCR_HEIGHT / 2);
-            if (gP.getLevelSelection() + 1 < gL.getMapLayout().size()) g.drawString("Next level", (SCR_WIDTH - g.getFontMetrics().stringWidth("Next level")) / 4 * 3, 900);
+            if (gP.getLevelSelection() + 1 < getMapLayout().size()) g.drawString("Next level", (SCR_WIDTH - g.getFontMetrics().stringWidth("Next level")) / 4 * 3, 900);
         }
         else g.drawString("You shat yourself while searching for restroom.", (SCR_WIDTH - g.getFontMetrics().stringWidth("You shat yourself while searching for restroom.")) / 2, SCR_HEIGHT / 2);
     }
     //endregion
 
     //region menu
-    //render mainmenu
-    public void renderMainMenu(Graphics g) {
+    public void renderMainMenu(Graphics g) { //render mainmenu
         //background
         g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/images/menu.png"), 0, 0, null);
 
@@ -95,8 +97,7 @@ public class GameRender {
         g.drawString("Exit", (SCR_WIDTH - g.getFontMetrics().stringWidth("Exit")) / 2, 700);
     }
 
-    //render submenu
-    public void renderLevelSelection(Graphics g) {
+    public void renderLevelSelection(Graphics g) { //render submenu
         //background
         g.drawImage(Toolkit.getDefaultToolkit().getImage("gamefiles/images/menu.png"), 0, 0, null);
 

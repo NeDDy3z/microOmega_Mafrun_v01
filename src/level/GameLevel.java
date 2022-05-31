@@ -1,22 +1,17 @@
 package level;
 
-import input.GameInput;
-import ui.GamePanel;
-import ui.GameRender;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static ui.GamePanel.*;
+import input.GameInput;
+import ui.GamePanel;
+import ui.GameRender;
 
 public class GameLevel {
 
+    //region constructors
     GameRender gR = new GameRender(this);
     GameInput gI = new GameInput(this);
 
@@ -24,7 +19,7 @@ public class GameLevel {
     public GameLevel(GamePanel gP) {
         this.gP = gP;
     }
-
+    //endregion
 
     //everything has to be static otherwise nothing works thanks to GamePanel (sadge)
     private static ArrayList<ArrayList<Integer>> levels = new ArrayList<ArrayList<Integer>>(); //Arraylist of arraylists of maps
@@ -37,6 +32,7 @@ public class GameLevel {
 
     //read map layout from files
     public static void readLevels() {
+        delete();
         for (int i = 0; i < levelPath.length; i++) {
             ArrayList<Integer> tmp = new ArrayList<Integer>();
             try {
@@ -56,7 +52,7 @@ public class GameLevel {
         }
     }
 
-    //return blocks position in its map arraylist
+    //get "block" order in arraylist
     public static int blockCoords(int x, int y) {
         int pos = 0;
 

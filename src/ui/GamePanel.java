@@ -3,7 +3,6 @@ package ui;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
-import java.util.TimerTask;
 
 import level.Countdown;
 import level.GameLevel;
@@ -13,17 +12,17 @@ import static level.GameLevel.*;
 
 public class GamePanel extends JPanel implements ActionListener {
 
-    //region data
+    //region variables, constructors, enum
     public final static int SCR_WIDTH = 1000; //width of window
     public final static int SCR_HEIGHT = 1000; //height of window
     public final static int UNIT = 50; //size of "blocks"
 
-    private int playerX = 1 * UNIT;
-    private int playerY = 19 * UNIT;
-    private int levelSelection = 0;
-    private int countdown = 100;
-    private boolean alive = false;
-    private boolean win = false;
+    private int playerX;
+    private int playerY;
+    private int levelSelection = 0; //initial selected level
+    private int countdown;
+    private boolean alive;
+    private boolean win;
     private Timer timer;
 
     public static enum STATE {
@@ -49,16 +48,14 @@ public class GamePanel extends JPanel implements ActionListener {
         gameStart();
     }
 
-    public void gameStart() { //start game
-        delete();
+    public void gameStart() { //start game - read levels from files, set initial parameters for player
         readLevels();
 
         playerX = 1 * UNIT;
         playerY = 19 * UNIT;
-
+        countdown = 75;
         alive = true;
         win = false;
-        countdown = 75;
 
         timer = new Timer(60, this);
         timer.start();
@@ -74,8 +71,8 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     //endregion
 
-    //region call for render
-    public void paintComponent(Graphics g) {
+    //region render
+    public void paintComponent(Graphics g) { //chooses what to render based on enum state
         super.paintComponent(g);
 
         switch (gameState) {
@@ -90,11 +87,11 @@ public class GamePanel extends JPanel implements ActionListener {
     }
     //endregion
 
-    //region actionperformed
-    public void actionPerformed(ActionEvent e) {
+    //region action performed
+    public void actionPerformed(ActionEvent e) { //if anything happens it forces rerender
         repaint();
 
-        if (playerX == 18 * UNIT && playerY == 19 * UNIT) {
+        if (playerX == 18 * UNIT && playerY == 19 * UNIT) { //check if player stepped on finish "block"
             win = true;
             alive = false;
         }
@@ -138,5 +135,5 @@ public class GamePanel extends JPanel implements ActionListener {
     public void setWin(boolean win) {
         this.win = win;
     }
-//endregion
+    //endregion
 }

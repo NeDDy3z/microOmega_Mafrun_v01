@@ -1,11 +1,13 @@
 package test;
 
+import ui.GameFrame;
+
 class MainTest {
 
     @org.junit.jupiter.api.Test
     void main() {
 
-        //new GameFrame();
+        new GameFrame();
 
         /*
         GameLevel gL = new GameLevel();

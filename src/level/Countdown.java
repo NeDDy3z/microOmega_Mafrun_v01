@@ -12,6 +12,7 @@ import static ui.GamePanel.gameState;
 
 public class Countdown implements ActionListener {
 
+    //region constructors
     GamePanel gP;
 
     public Countdown(GamePanel gP) {
@@ -19,8 +20,7 @@ public class Countdown implements ActionListener {
     }
 
     GameInput gI = new GameInput(this);
-
-
+    //endregion
 
     public Timer countdownTimer = new Timer(1000, this);
 

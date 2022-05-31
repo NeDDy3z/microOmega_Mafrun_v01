@@ -12,6 +12,7 @@ import static ui.GamePanel.*;
 
 public class GameInput implements MouseListener, KeyListener {
 
+    //region constructors
     GamePanel gP;
     GameLevel gL;
     Countdown cd;
@@ -27,21 +28,21 @@ public class GameInput implements MouseListener, KeyListener {
     public GameInput(Countdown cd) {
         this.cd = cd;
     }
+    //endregion
 
     //region input
-    //main menu selection
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) { //used for main-menu
         switch (gameState) {
             case MAINMENU:
-                //play button
+                //play
                 if (e.getX() >= 450 && e.getX() <= 550) {
                     if (e.getY() >= 460 && e.getY() <= 510) {
                         gameState = STATE.GAME;
                         gP.countdownStart();
                     }
                 }
-                //level select button
+                //level select
                 if (e.getX() >= 360 && e.getX() <= 635) {
                     if (e.getY() >= 560 && e.getY() <= 600) gameState = STATE.LEVELMENU;
                 }
@@ -82,11 +83,10 @@ public class GameInput implements MouseListener, KeyListener {
         }
     }
 
-    //movement of player with arrow-keys
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e) { //used for player movement
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_UP: //up arrow-key moves player up
+            case KeyEvent.VK_UP: //up arrow-key moves player up...
                 if (!getMapLayout().get(gP.getLevelSelection()).get(blockCoords(gP.getPlayerX(), gP.getPlayerY() - UNIT)).equals(0)) gP.setPlayerY(gP.getPlayerY() - UNIT);
                 break;
 
