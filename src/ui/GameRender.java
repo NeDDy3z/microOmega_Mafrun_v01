@@ -15,13 +15,9 @@ public class GameRender {
 
     //region constructors
     GamePanel gP;
-    GameLevel gL;
 
     public GameRender(GamePanel gP) {
         this.gP = gP;
-    }
-    public GameRender(GameLevel gL) {
-        this.gL = gL;
     }
     //endregion
 

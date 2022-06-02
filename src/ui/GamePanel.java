@@ -12,7 +12,6 @@ import java.awt.event.*;
 import java.awt.*;
 
 import level.Countdown;
-import level.GameLevel;
 import input.GameInput;
 
 import static level.GameLevel.*;
@@ -41,7 +40,7 @@ public class GamePanel extends JPanel implements ActionListener {
     public static STATE gameState = STATE.MAINMENU;
 
     GameRender gR = new GameRender(this);
-    GameLevel gL = new GameLevel(this);
+    GameInput gI = new GameInput(this);
     Countdown cd = new Countdown(this);
     //endregion
 
@@ -53,9 +52,11 @@ public class GamePanel extends JPanel implements ActionListener {
         this.addMouseListener(new GameInput(this));
 
         gameStart();
+
     }
 
     public void gameStart() { //start game - read levels from files, set initial parameters for player
+        delete();
         readLevels();
 
         playerX = 1 * UNIT;
@@ -95,7 +96,7 @@ public class GamePanel extends JPanel implements ActionListener {
     //endregion
 
     //region action performed
-    public void actionPerformed(ActionEvent e) { //if anything happens it forces rerender
+    public void actionPerformed(ActionEvent e) { //if anything happens it repaints
         repaint();
 
         if (playerX == 18 * UNIT && playerY == 19 * UNIT) { //check if player stepped on finish "block"

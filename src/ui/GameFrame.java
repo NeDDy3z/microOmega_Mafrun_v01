@@ -13,7 +13,7 @@ public class GameFrame extends JFrame{
         this.add(new GamePanel());
 
         this.setTitle("Poopie Mafrun");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit program when closing window
         this.setResizable(false);
         this.setVisible(true);
         this.pack();

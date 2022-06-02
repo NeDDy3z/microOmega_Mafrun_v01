@@ -66,6 +66,7 @@ public class GameInput implements MouseListener, KeyListener {
                     if (e.getY() >= 710 && e.getY() <= 750) gP.setLevelSelection(2);
                     //back
                     if (e.getY() >= 810 && e.getY() <= 850) gameState = STATE.MAINMENU;
+                    gP.gameStart();
                 }
             case GAMEOVER:
                 if (e.getY() >= 875 && e.getY() <= 900) {
